@@ -17,6 +17,8 @@ from constants import (
     QUERIES_FILE,
     INITIAL_RESULTS_FILE,
 )
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 
 class BogoDB:
