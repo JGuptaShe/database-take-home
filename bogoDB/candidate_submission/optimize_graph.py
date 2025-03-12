@@ -121,10 +121,31 @@ def optimize_graph(
     # - All nodes must remain in the graph
     # - Edge weights must be positive and ≤ 10
 
-    # Simple Loop implementation
+    # # Simple Loop implementation
+    # for node in optimized_graph:
+    #     optimized_graph[node] = {str(int(node)+1):1}
+    # optimized_graph["499"] = {"0":1}
+
+    # Sorted loop implementation, with a backprop
+
+    # calculating the frequency of each query target
+    freq_dict = {}
+    for val in range(500):
+        freq_dict[val] = 0
+    for query in results["detailed_results"]:
+        freq_dict[query["target"]] += 1
+    sorted_list = [i for i in range(500)]
+    sorted_list.sort(key = lambda x: -1 * freq_dict[x])
+
+    # creating the loop
+    for i in range(len(sorted_list)):
+        optimized_graph[str(sorted_list[i])] = {str((sorted_list[(i+1)%500])) : 1}
+
+    # backprop
+    p = 0.1
     for node in optimized_graph:
-        optimized_graph[node] = {str(int(node)+1):1}
-    optimized_graph["499"] = {"0":1}
+        if int(node) != sorted_list[0]:
+            optimized_graph[node][str(sorted_list[0])] = p
 
     # =============================================================
     # End of your implementation
