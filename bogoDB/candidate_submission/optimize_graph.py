@@ -126,23 +126,7 @@ def optimize_graph(
     #     optimized_graph[node] = {str(int(node)+1):1}
     # optimized_graph["499"] = {"0":1}
 
-    # # Sorted loop implementation, with a backprop
-    # # calculating the frequency of each query target
-    # freq_dict = {}
-    # for val in range(500):
-    #     freq_dict[val] = 0
-    # for query in results["detailed_results"]:
-    #     freq_dict[query["target"]] += 1
-    # sorted_list = [i for i in range(500)]
-    # sorted_list.sort(key = lambda x: -1 * freq_dict[x])
-    #
-    # # creating the loop and backprop
-    # p = 0.5
-    # for i in range(len(sorted_list)):
-    #     optimized_graph[str(sorted_list[i])] = {str((sorted_list[(i+1)%500])): 1}
-    #     optimized_graph[str(sorted_list[i])][str(sorted_list[0])] = i * p/500
-
-    # Tree implementation, with backprop
+    # Sorted loop implementation, with back edges
     # calculating the frequency of each query target
     freq_dict = {}
     for val in range(500):
@@ -152,27 +136,46 @@ def optimize_graph(
     sorted_list = [i for i in range(500)]
     sorted_list.sort(key = lambda x: -1 * freq_dict[x])
 
-    # creating the tree and backprop
+    # creating the chain and back edges
+    p = 1.7
     for i in range(len(sorted_list)):
+        optimized_graph[str(sorted_list[i])] = {str((sorted_list[(i+1)%500])): 1}
+        if i!=0:
+            optimized_graph[str(sorted_list[i])][str(sorted_list[0])] = i * p/500
 
-        # has children: propagate downwards
-        if 2* i + 2 < len(sorted_list):
-
-            # fixing for 0s
-            if freq_dict[2 * i + 1] == 0 or freq_dict[2 * i  + 2] == 0:
-                optimized_graph[str(sorted_list[i])] = {
-                    str(sorted_list[2 * i + 1]): freq_dict[2 * i + 1] + 1,
-                    str(sorted_list[2 * i + 2]): freq_dict[2 * i + 2] + 1
-                }
-            else:
-                optimized_graph[str(sorted_list[i])] = {
-                    str(sorted_list[2 * i + 1]): freq_dict[2 * i + 1] / (freq_dict[2 * i + 1] + freq_dict[2 * i + 2]),
-                    str(sorted_list[2 * i + 2]): freq_dict[2 * i + 2] / (freq_dict[2 * i + 1] + freq_dict[2 * i + 2])
-                }
-
-        # leaf: backprop
-        else:
-            optimized_graph[str(sorted_list[i])] = {str(sorted_list[0]): 1}
+    # # Tree implementation, with back edges
+    # # calculating the frequency of each query target
+    # freq_dict = {}
+    # for val in range(500):
+    #     freq_dict[val] = 0
+    # for query in results["detailed_results"]:
+    #     freq_dict[query["target"]] += 1
+    # sorted_list = [i for i in range(500)]
+    # sorted_list.sort(key = lambda x: -1 * freq_dict[x])
+    #
+    # # creating the tree and backprop
+    # for i in range(len(sorted_list)):
+    #
+    #     # has children: propagate downwards
+    #     if 2* i + 2 < len(sorted_list):
+    #
+    #         # fixing for 0s
+    #         if freq_dict[2 * i + 1] == 0 or freq_dict[2 * i  + 2] == 0:
+    #             optimized_graph[str(sorted_list[i])] = {
+    #                 str(sorted_list[2 * i + 1]): freq_dict[2 * i + 1] + 1,
+    #                 str(sorted_list[2 * i + 2]): freq_dict[2 * i + 2] + 1
+    #             }
+    #         else:
+    #             optimized_graph[str(sorted_list[i])] = {
+    #                 str(sorted_list[2 * i + 1]): freq_dict[2 * i + 1] / (freq_dict[2 * i + 1] + freq_dict[2 * i + 2]),
+    #                 str(sorted_list[2 * i + 2]): freq_dict[2 * i + 2] / (freq_dict[2 * i + 1] + freq_dict[2 * i + 2])
+    #             }
+    #         if i!=0:
+    #             optimized_graph[str(sorted_list[i])][str(sorted_list[0])] = i * 0.7 / 500
+    #
+    #     # leaf: backprop
+    #     else:
+    #         optimized_graph[str(sorted_list[i])] = {str(sorted_list[0]): 1}
 
     # =============================================================
     # End of your implementation
