@@ -133,13 +133,17 @@ def optimize_graph(
         freq_dict[val] = 0
     for query in results["detailed_results"]:
         freq_dict[query["target"]] += 1
+
+    # sorting by the found frequency
     sorted_list = [i for i in range(500)]
     sorted_list.sort(key = lambda x: -1 * freq_dict[x])
 
     # creating the chain and back edges
-    p = 2
+    p = 2 #paramater for scaling the weights of the back edges
     for i in range(len(sorted_list)):
+        # creating the forward edge for the chain
         optimized_graph[str(sorted_list[i])] = {str((sorted_list[(i+1)%500])): 1}
+        # creating the back edges
         if i!=0:
             optimized_graph[str(sorted_list[i])][str(sorted_list[0])] = i * p/500
 
