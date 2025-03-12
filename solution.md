@@ -21,13 +21,13 @@ Generally, the optimization strategy is to point into nodes more likely to be qu
 
 First, we have to analyze the queries. We use a dictionary to count how many times each node was queried. This will be our inferred distribution on the queries. Note that many nodes will not be queried at all, meaning they probably have a low frequency of being queried, however we still need to make it possible to find these nodes (with an appropriately low probability).
 
-After we have our distribution, we will sort them by most likely to be queried (with our current information), and rank them in this order. We use an edge to connect each node to the its next ranked neighbor, and the lowest ranked node will be looped back to the highest rank node. Then, we use back edges to connect each node to the highest ranked node, scaling up its rank the lower we go. Getting down to a median of 8 edges per path got combined scores of around 530, even reaching 541.88.
+After we have our distribution, we will sort them by most likely to be queried (with our current information), and rank them in this order. We use an edge to connect each node to the its next ranked neighbor, and the lowest ranked node will be looped back to the highest rank node. Then, we use back edges to connect each node to the highest ranked node, scaling up its rank the lower we go.
 
 ### Results
 
 [Share the performance metrics of your solution]
 
-In general, the median length reached 8 to 11, depending on the weight of the back edges. Typically, stronger back edges worked better (to an extent), as the distribution is quite skewed, and it is likely we want to head back to the first node as quickly as possible.
+The success rate was always 100%. I never viewed it get any lower, but I can see in extreme cases in lots of queries that it may fail. In general, the median length reached 8 to 11, depending on the weight of the back edges. Typically, stronger back edges worked better (to an extent), as the distribution is quite skewed, and it is likely we want to head back to the first node as quickly as possible. Getting down to a median of 8 edges per path got combined scores of around 520 to 530, even reaching 541.88.
 
 ### Trade-offs & Limitations
 

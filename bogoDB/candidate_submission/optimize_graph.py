@@ -137,7 +137,7 @@ def optimize_graph(
     sorted_list.sort(key = lambda x: -1 * freq_dict[x])
 
     # creating the chain and back edges
-    p = 1.7
+    p = 2
     for i in range(len(sorted_list)):
         optimized_graph[str(sorted_list[i])] = {str((sorted_list[(i+1)%500])): 1}
         if i!=0:
